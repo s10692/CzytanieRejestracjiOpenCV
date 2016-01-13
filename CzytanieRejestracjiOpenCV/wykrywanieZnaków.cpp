@@ -35,5 +35,47 @@ bool AlgorytmKNN(void) {
 		return(false);
 	}
 
-	fsSzkolenieObrazu["images"] >> matTrainingImagesAsFlattenedFloats;
+	fsSzkolenieObrazu["images"] >> matTrainingImagesAsFlattenedFloats;  //odcinek do odczytu zdjêæ Mat obrazów treningowych zmiennej
+
+	fsSzkolenieObrazu.release();                                      //zamykanie pliku
+
+	//Koniec Czytania obrazów szkoleniowych
+
+	     //W koñcu docieramy do wezwania do poci¹gu, nale¿y pamiêtaæ, ¿e oba parametry musz¹ byæ typu Mat
+		// Nawet jeœli w rzeczywistoœci s¹ one wieloma obrazkami / liczbami
+
+	kNearest->setDefaultK(1);
+
+	kNearest->train(matTrainingImagesAsFlattenedFloats, cv::ml::ROW_SAMPLE, matKlasyfikacjaInts);
+
+	return true;
+}
+
+//Koniec algorytmu KNN
+
+std::vector<Rejestracje> znajdzZnakiwTablicy(std::vector<Rejestracje> &vectorRejestracji) {
+	int intLicznikRejestracji = 0;   //tylko do zobaczenia postêpu Szukania Znaków
+	cv::Mat imgKontury;
+	cv::RNG rng;
+
+	if (vectorRejestracji.empty()) {
+		return(vectorRejestracji);
+	}
+	//W tym momencie mo¿emy byæ pewni, wektor mo¿liwych p³yt ma co najmniej jedn¹ p³ytê
+
+	for (auto &Rejestracje : vectorRejestracji) {
+
+		preprocess(Rejestracje.imgRejestacja, Rejestracje.imgOdcienieSzarosci, Rejestracje.imgObcinanie);
+
+		if (blnWidziKroki) {
+			cv::imWidzi("5a", Rejestracje.imgRejestracja);
+			cv::imWidzi("5b"), Rejestracje.imgOdcienieSzarosci);
+			cv::imWidzi("5c"), Rejestracje.imgObcinanie);
+		}
+
+		//zwiêkszenie wielkoœci rejestracji zdjêcia w celu ³atwiejszego ogl¹dania i wykrywania znaków
+		cv::resize(Rejestracje.imgObcinanie, Rejestracje.imgObcinanie, cv::Size(), 1.6, 1.6);
+
+	}
+
 }
